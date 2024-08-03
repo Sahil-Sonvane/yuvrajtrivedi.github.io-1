@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Professional Video Player with Playlist</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #f0f0f0;
+        background-image: url('background.jpg'); /* Replace with your background image */
+        background-size: cover;
+        background-position: center;
+        color: #333;
+    }
+    
+    .video-player {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: flex-start;
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .video-container {
+        flex: 1;
+        margin-right: 20px;
+        background-color: #333;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    }
+    
+    video {
+        width: 100%;
+        display: block;
+    }
+    
+    .playlist {
+        width: 300px;
+        background-color: rgba(0, 0, 0, 0.7);
+        color: #fff;
+        padding: 10px;
+        overflow-y: auto;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+    
+    .playlist-items {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .playlist-item {
+        padding: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .playlist-item:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .playlist-item-actions {
+        display: none;
+    }
+    
+    .playlist-item:hover .playlist-item-actions {
+        display: flex;
+    }
+    
+    .playlist-item-actions button {
+        background-color: transparent;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        margin-left: 5px;
+        font-size: 12px;
+        transition: color 0.3s ease;
+    }
+    
+    .playlist-item-actions button:hover {
+        color: #007bff;
+    }
+    
+    .controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: rgba(0, 0, 0, 0.7);
+        padding: 10px;
+        margin-top: 10px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    }
+    
+    .control-group {
+        display: flex;
+        align-items: center;
+    }
+    
+    .control-group select, .control-group button, .control-group input[type="file"] {
+        margin-left: 10px;
+        padding: 8px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+    
+    .control-group select {
+        max-width: 150px;
+    }
+    
+    .control-group button {
+        padding: 8px 12px;
+    }
+    
+    .control-group button:hover, .control-group select:hover, .control-group input[type="file"]:hover {
+        background-color: #0056b3;
+    }
+    
+    .title-bar {
+        background-color: #007bff;
+        color: #fff;
+        padding: 8px;
+        text-align: center;
+        font-weight: bold;
+        text-transform: uppercase;
+        border-radius: 8px 8px 0 0;
+    }
+    
+    .footer {
+        background-color: #007bff;
+        padding: 10px;
+        text-align: center;
+        color: #fff;
+        font-size: 12px;
+        margin-top: 10px;
+        border-radius: 0 0 8px 8px;
+    }
+    
+    .add-to-playlist {
+        background-color: rgba(0, 0, 0, 0.7);
+        color: #fff;
+        padding: 10px;
+        margin-top: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    }
+    
+    .add-to-playlist input[type="text"] {
+        padding: 8px;
+        margin-right: 10px;
+        border: none;
+        border-radius: 5px;
+        width: 60%;
+    }
+    
+    .add-to-playlist button {
+        padding: 8px 12px;
+        background-color: #007bff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        color: #fff;
+    }
+    
+    .add-to-playlist button:hover {
+        background-color: #0056b3;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+        body {
+            background-color: #222;
+            color: #fff;
+        }
+        
+        .video-player {
+            background-color: #333;
+        }
+        
+        .playlist {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .controls {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .title-bar {
+            background-color: #0056b3;
+        }
+        
+        .footer {
+            background-color: #0056b3;
+        }
+        
+        .add-to-playlist {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        .youtube-input {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    
+    .youtube-input input[type="text"] {
+        flex: 1;
+        padding: 8px;
+        margin-right: 10px;
+        border: none;
+        border-radius: 5px;
+    }
+    
+    .youtube-input button {
+        padding: 8px 12px;
+        background-color: #007bff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        color: #fff;
+    }
+    
+    .youtube-input button:hover {
+        background-color: #0056b3;
+    }
+    
+    .youtube-player {
+        width: 100%;
+        height: 500px;
+        margin-top: 10px;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+        body {
+            background-color: #222;
+            color: #fff;
+        }
+        
+        .video-player {
+            background-color: #333;
+        }
+        
+        .playlist {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .controls {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .title-bar {
+            background-color: #0056b3;
+        }
+        
+        .footer {
+            background-color: #0056b3;
+        }
+        
+        .add-to-playlist {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .youtube-section {
+            background-color: #333;
+        }
+    }
+    }
+</style>
+</head>
+<body>
+
+<div class="video-player">
+    <div class="video-container">
+        <div class="title-bar">Video Player</div>
+        <video id="player" controls>
+            <source src="video.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <div class="controls">
+            <div class="control-group">
+                <select id="audio-select">
+                    <option value="0">Audio Track 1</option>
+                    <option value="1">Audio Track 2</option>
+                </select>
+                <button id="switch-audio">Switch Audio</button>
+                <button id="night-mode">Dark Mode</button>
+            </div>
+            <div class="control-group">
+                <input type="file" id="upload-video">
+            </div>
+        </div>
+    </div>
+    <div class="playlist">
+        <div class="title-bar">Playlist</div>
+        <ul class="playlist-items">
+            <li class="playlist-item" data-video-src="video.mp4">
+                <span>Video 1 - Introduction</span>
+                <div class="playlist-item-actions">
+                    <button class="edit-item">Edit</button>
+                    <button class="remove-item">Remove</button>
+                </div>
+            </li>
+            <li class="playlist-item" data-video-src="video.mp4">
+                <span>Video 2 - Features</span>
+                <div class="playlist-item-actions">
+                    <button class="edit-item">Edit</button>
+                    <button class="remove-item">Remove</button>
+                </div>
+            </li>
+            <li class="playlist-item" data-video-src="video.mp4">
+                <span>Video 3 - Conclusion</span>
+                <div class="playlist-item-actions">
+                    <button class="edit-item">Edit</button>
+                    <button class="remove-item">Remove</button>
+                </div>
+            </li>
+            <!-- More playlist items can be dynamically added -->
+        </ul>
+        <div class="add-to-playlist">
+            <input type="text" id="new-video" placeholder="Enter video URL">
+            <button id="add-video">Add to Playlist</button>
+        </div>
+    </div>
+</div>
+<div><h1>FOR YouTube</h1></div>
+<div class="youtube-section">
+    <div class="title-bar">Watch YouTube Videos</div>
+    <div class="youtube-input">
+        <input type="text" id="youtube-url" placeholder="Enter YouTube URL">
+        <button id="load-youtube">Load Video</button>
+    </div>
+    <div class="youtube-player" id="youtube-player"></div>
+</div>
+
+<script>
+    // Video player controls
+    const player = document.getElementById('player');
+    const audioSelect = document.getElementById('audio-select');
+    const switchAudioBtn = document.getElementById('switch-audio');
+    const nightModeBtn = document.getElementById('night-mode');
+
+    switchAudioBtn.addEventListener('click', () => {
+        const selectedAudioIndex = audioSelect.value;
+        player.currentSrc = player.currentSrc.replace(/#t=[\d.]+/i, '') + `#t=${selectedAudioIndex}`;
+        player.load();
+    });
+
+    nightModeBtn.addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+    });
+
+    // Playlist functionality
+    const playlistItems = document.querySelectorAll('.playlist-item');
+
+    playlistItems.forEach(item => {
+        item.addEventListener('click', () => {
+            const videoSrc = item.getAttribute('data-video-src');
+            player.src = videoSrc;
+            player.load();
+            player.play();
+        });
+    });
+
+    // Add video to playlist
+    const addVideoBtn = document.getElementById('add-video');
+    const newVideoInput = document.getElementById('new-video');
+
+    addVideoBtn.addEventListener('click', () => {
+        const videoUrl = newVideoInput.value.trim();
+        if (videoUrl) {
+            const listItem = document.createElement('li');
+            listItem.classList.add('playlist-item');
+            listItem.innerHTML = `<span>${videoUrl}</span>
+                                  <div class="playlist-item-actions">
+                                      <button class="edit-item">Edit</button>
+                                      <button class="remove-item">Remove</button>
+                                  </div>`;
+            listItem.setAttribute('data-video-src', videoUrl); // Set data-video-src attribute
+            listItem.addEventListener('click', () => {
+                player.src = videoUrl;
+                player.load();
+                player.play();
+            });
+            document.querySelector('.playlist-items').appendChild(listItem);
+            newVideoInput.value = '';
+        }
+    });
+
+    // Upload video file
+    const uploadVideoInput = document.getElementById('upload-video');
+
+    uploadVideoInput.addEventListener('change', function() {
+        const file = this.files[0];
+        const blobUrl = URL.createObjectURL(file);
+        const listItem = document.createElement('li');
+        listItem.classList.add('playlist-item');
+        listItem.innerHTML = `<span>${file.name}</span>
+                              <div class="playlist-item-actions">
+                                  <button class="edit-item">Edit</button>
+                                  <button class="remove-item">Remove</button>
+                              </div>`;
+        listItem.setAttribute('data-video-src', blobUrl); // Set data-video-src attribute
+        listItem.addEventListener('click', () => {
+            player.src = blobUrl;
+            player.load();
+            player.play();
+        });
+        document.querySelector('.playlist-items').appendChild(listItem);
+    });
+    document.addEventListener('DOMContentLoaded', function() {
+    const player = document.getElementById('player');
+    const uploadVideoInput = document.getElementById('upload-video');
+    const audioSelect = document.getElementById('audio-select');
+    const switchAudioBtn = document.getElementById('switch-audio');
+    const nightModeBtn = document.getElementById('night-mode');
+    const playlistItems = document.querySelectorAll('.playlist-item');
+    const addVideoInput = document.getElementById('new-video');
+    const addVideoBtn = document.getElementById('add-video');
+    const youtubeUrlInput = document.getElementById('youtube-url');
+    const loadYoutubeBtn = document.getElementById('load-youtube');
+    const youtubePlayerContainer = document.getElementById('youtube-player');
+
+    // Function to load YouTube video
+    function loadYouTubeVideo(videoId) {
+        const iframe = document.createElement('iframe');
+        iframe.width = '100%';
+        iframe.height = '100%';
+        iframe.src = `https://www.youtube.com/embed/${videoId}`;
+        iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+        iframe.allowFullscreen = true;
+        youtubePlayerContainer.innerHTML = '';
+        youtubePlayerContainer.appendChild(iframe);
+    }
+
+    // Event listeners
+    loadYoutubeBtn.addEventListener('click', function() {
+        const youtubeUrl = youtubeUrlInput.value.trim();
+        if (youtubeUrl !== '') {
+            const videoId = extractYouTubeId(youtubeUrl);
+            if (videoId) {
+                loadYouTubeVideo(videoId);
+            } else {
+                alert('Invalid YouTube URL. Please enter a valid YouTube video URL.');
+            }
+        } else {
+            alert('Please enter a YouTube video URL.');
+        }
+    });
+
+    // Function to extract YouTube video ID from URL
+    function extractYouTubeId(url) {
+        let videoId = '';
+        const regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#\&\?]*).*/;
+        const match = url.match(regExp);
+        if (match && match[2].length === 11) {
+            videoId = match[2];
+        }
+        return videoId;
+    }
+
+    // Add to Playlist functionality
+    addVideoBtn.addEventListener('click', function() {
+        const videoUrl = addVideoInput.value.trim();
+        if (videoUrl !== '') {
+            const listItem = document.createElement('li');
+            listItem.classList.add('playlist-item');
+            listItem.innerHTML = `
+                <span>${videoUrl}</span>
+                <div class="playlist-item-actions">
+                    <button class="edit-item">Edit</button>
+                    <button class="remove-item">Remove</button>
+                </div>`;
+            document.querySelector('.playlist-items').appendChild(listItem);
+            addVideoInput.value = '';
+        } else {
+            alert('Please enter a valid video URL.');
+        }
+    });
+
+    // Remove from Playlist functionality
+    document.addEventListener('click', function(e) {
+        if (e.target && e.target.classList.contains('remove-item')) {
+            e.target.closest('.playlist-item').remove();
+        }
+    });
+
+    // Edit Playlist item (optional, for future implementation)
+    document.addEventListener('click', function(e) {
+        if (e.target && e.target.classList.contains('edit-item')) {
+            // Logic to edit playlist item (to be implemented)
+            alert('Edit functionality to be implemented.');
+        }
+    });
+
+    // Switch Audio Track functionality (example, modify as needed)
+    switchAudioBtn.addEventListener('click', function() {
+        const selectedAudio = audioSelect.value;
+        // Logic to switch audio track (to be implemented)
+        alert(`Switching to Audio Track ${selectedAudio}`);
+    });
+
+    // Night Mode toggle (example, modify as needed)
+    nightModeBtn.addEventListener('click', function() {
+        // Toggle dark mode styles
+        document.body.classList.toggle('dark-mode');
+    });
+
+    // Initial setup (optional, to load default video or setup initial state)
+    // Example: load default video
+    player.src = 'video.mp4'; // Replace with your default video URL
+
+});
+</script>
+
+</body>
+</html>
